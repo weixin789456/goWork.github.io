@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>退休年龄计算器</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        label, input, select {
+            display: block;
+            margin-bottom: 10px;
+            width: 100%;
+        }
+        button {
+            padding: 10px;
+            width: 100%;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #e7f3e7;
+            border: 1px solid #d6e9d6;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>退休年龄计算器</h2>
+
+    <label for="birthYear">请输入你的出生年份：</label>
+    <input type="number" id="birthYear" name="birthYear" min="1900" max="2100" placeholder="例如：1980">
+
+    <label for="birthMonth">请输入你的出生月份：</label>
+    <input type="number" id="birthMonth" name="birthMonth" min="1" max="12" placeholder="例如：5">
+
+    <label for="gender">请选择性别：</label>
+    <select id="gender" name="gender">
+        <option value="male">男</option>
+        <option value="female">女</option>
+    </select>
+
+    <button onclick="calculateRetirement()">计算退休年龄</button>
+
+    <div class="result" id="result"></div>
+</div>
+
+<script>
+function calculateRetirement() {
+    const birthYear = parseInt(document.getElementById("birthYear").value);
+    const birthMonth = parseInt(document.getElementById("birthMonth").value);
+    const gender = document.getElementById("gender").value;
+
+    if (isNaN(birthYear) || isNaN(birthMonth) || birthMonth < 1 || birthMonth > 12) {
+        document.getElementById("result").textContent = "请输入有效的出生年份和月份。";
+        return;
+    }
+
+    // 基准年及初始退休年龄
+    let baseYear = gender === 'male' ? 1965 : 1970;
+    let initialRetirementAge = gender === 'male' ? 60 : 50;
+
+    // 计算从基准年到出生年之间的年份差距
+    const yearDifference = birthYear - baseYear;
+
+    if (yearDifference < 0) {
+        document.getElementById("result").textContent = "你输入的出生日期早于退休基准年，按法定退休男60，女50，无需计算。";
+        return;
+    }
+
+    // 计算延迟退休的月数：每4个月延迟1个月
+    const monthDelay = Math.ceil(((yearDifference * 12) + birthMonth) / 4);
+
+    // 计算延迟年数和月数
+    const additionalYears = Math.floor(monthDelay / 12);
+    const additionalMonths = monthDelay % 12;
+
+    // 最终退休年龄
+    const finalRetirementAgeYears = initialRetirementAge + additionalYears;
+    const finalRetirementAgeMonths = additionalMonths;
+
+    document.getElementById("result").textContent = `你的退休年龄是：${finalRetirementAgeYears}岁零${finalRetirementAgeMonths}个月。`;
+}
+</script>
+
+</body>
+</html>
